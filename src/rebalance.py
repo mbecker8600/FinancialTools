@@ -2,6 +2,12 @@ import pandas as pd
 import numpy as np
 from src.util.data import get_current_pricing
 
+"""
+main.py
+====================================
+The core module of my example project
+"""
+
 
 class BasicRebalancer:
 

@@ -17,10 +17,15 @@ class Portfolio:
     def statisitics(self):
         pass
 
+    def execute_trade(self):
+        pass
+
+    def __compute_stats__(self):
+        self.allocations = self.holdings / self.holdings.sum()
+        self.value = self.holdings.sum().value + self.cash
+
 
 if __name__ == '__main__':
-
-
     initial_holdings = get_initial_holdings()
     portfolio = Portfolio(initial_holdings, initial_cash=11012.38)
 
