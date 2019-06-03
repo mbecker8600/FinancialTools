@@ -20,6 +20,7 @@ install:
        /usr/local/bin/python3 -m venv venv; \
        source venv/bin/activate; \
        pip install -r requirements.txt; \
+       mkdir ~/.portfolio_data; \
     )
 
 docs:
@@ -29,12 +30,11 @@ docs:
        make html; \
     )
 
-activate:
-	venv/bin/activate
-
 clean:
 	rm -rf venv
 	( \
        cd docs; \
        make clean; \
     )
+
+.PHONY: docs clean

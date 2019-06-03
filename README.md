@@ -18,16 +18,16 @@ Give examples
 
 A step by step series of examples that tell you how to get a development env running
 
-Say what the step will be
+Most of the project setup is automated through the make file. It will automatically create the virtual environment, install all of the requirements, and generate the documenation for the first time.
 
 ```
-Give the example
+make install
 ```
 
-And repeat
+Activate the virtual environment if it doesn't do it automatically.
 
 ```
-until finished
+source venv/bin/activate
 ```
 
 End with an example of getting some data out of the system or using it for a little demo

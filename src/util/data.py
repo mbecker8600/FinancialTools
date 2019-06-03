@@ -12,11 +12,6 @@ def get_current_pricing():
     return current_pricing
 
 
-def get_initial_holdings():
-    holdings = pd.read_csv(get_datafile('initial_holdings.csv'), index_col=0)
-    return holdings
-
-
 if __name__ == '__main__':
-    get_initial_holdings()
+    pass
 

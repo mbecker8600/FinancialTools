@@ -1,12 +1,7 @@
 import pandas as pd
 import numpy as np
+from src.transaction import Trade
 from src.util.data import get_current_pricing
-
-"""
-main.py
-====================================
-The core module of my example project
-"""
 
 
 class BasicRebalancer:
@@ -33,17 +28,23 @@ class BasicRebalancer:
         '''
 
         investment_capital = portfolio.cash - self.target_cash
-        target_holdings = self.target_allocations * (portfolio.holdings.sum() + investment_capital)
-        holdings_difference = target_holdings - portfolio.holdings
+        target_holdings = self.target_allocations * (portfolio.holdings['value'].sum() + investment_capital)
+        holdings_difference = target_holdings['value'] - portfolio.holdings['value']
         pricing = get_current_pricing()
 
         buy_symbols = holdings_difference[holdings_difference > 0]
-        buy_symbols.dropna(inplace=True)
         safe_buy_symbols = (buy_symbols / buy_symbols.sum()) * investment_capital
-        buy_trades = safe_buy_symbols / pricing
+        buy_trades = safe_buy_symbols / pricing['value']
         buy_trades.dropna(inplace=True)
         buy_trades = buy_trades.apply(np.floor)
-        pass
+
+        trades = []
+        for sym, quantity in zip(buy_trades.index.tolist(), buy_trades.values.tolist()):
+            trade = Trade(sym, 'BUY', quantity)
+            trades.append(trade)
+
+        return trades
+
 
 if __name__ == "__main__":
     import doctest
