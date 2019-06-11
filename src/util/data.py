@@ -1,17 +1,22 @@
-import pandas as pd
-from definitions import ROOT_DIR
+import pandas_datareader as pdr
 import os
+from src.util.patterns import Singleton
 
 
-def get_datafile(name):
-    return os.path.join(ROOT_DIR, 'src', 'data', name)
+@Singleton
+class PricingRetriever:
 
+    def __init__(self):
+        self.pricing = None
 
-def get_current_pricing():
-    current_pricing = pd.read_csv(get_datafile('pricing.csv'), index_col=0)
-    return current_pricing
+    def initialize(self, syms):
+        self.pricing = pdr.get_data_tiingo(syms, api_key=os.getenv('TIINGO_API_KEY'))
+
+    def current_prices(self):
+        return self.pricing.groupby('symbol').last()
 
 
 if __name__ == '__main__':
-    pass
+    PricingRetriever.instance()
+
 

@@ -1,6 +1,7 @@
 from cmd import Cmd
 from src.util.session import Session, SessionManager
 from src.instrument import Portfolio
+from src.strategy import BasicInvestment
 
 
 class IPrompt(Cmd):
@@ -12,13 +13,14 @@ class IPrompt(Cmd):
 
     def do_create_portfolio(self, args):
         """Creates a portfolio"""
+        initial_cash = float(input("How much cash is in your portfolio? "))
         n_holdings = int(input("How many holdings do you have? "))
         holdings = []
         for _ in range(n_holdings):
             sym = input("Symbol? ")
             shares = float(input("Number of shares? "))
             holdings.append((sym, shares))
-        portfolio = Portfolio(holdings, initial_cash=11012.38)
+        portfolio = Portfolio(holdings, initial_cash=initial_cash)
 
         print("Created new portfolio")
         portfolio.report()
@@ -37,6 +39,17 @@ class IPrompt(Cmd):
         session_name = args
         print("Loading session '{}'".format(session_name))
         self.session = self.session_manager.load(session_name)
+
+    def do_invest(self, args):
+        """Invests based on a given strategy"""
+
+        target_alloc = {
+            'VTI': .5,
+            'BND': .2,
+            'VXUS': .2,
+            'BNDX': .1
+        }
+        self.session.portfolio.invest(BasicInvestment(target_alloc, target_cash=10000))
 
     def do_report(self, args):
         """report portfolio"""

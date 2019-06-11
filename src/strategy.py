@@ -1,10 +1,10 @@
 import pandas as pd
 import numpy as np
 from src.transaction import Trade
-from src.util.data import get_current_pricing
+from src.util.data import PricingRetriever
 
 
-class BasicRebalancer:
+class BasicInvestment:
 
     def __init__(self, target_allocations, target_cash=0):
         '''
@@ -16,7 +16,7 @@ class BasicRebalancer:
         self.target_allocations = pd.DataFrame.from_dict(target_allocations, orient='index', columns=['value'])
         self.target_cash = target_cash
 
-    def rebalance(self, portfolio):
+    def execute(self, portfolio):
         '''
         Basic rebalancer strategy. It wont sell any funds in order to avoid any capital gains costs. It will only take
         the difference of the money in your cash reserves and your target cash allocations and invest your money to bring you
@@ -30,11 +30,13 @@ class BasicRebalancer:
         investment_capital = portfolio.cash - self.target_cash
         target_holdings = self.target_allocations * (portfolio.holdings['value'].sum() + investment_capital)
         holdings_difference = target_holdings['value'] - portfolio.holdings['value']
-        pricing = get_current_pricing()
+
+        retriever = PricingRetriever.instance()
+        current_prices = retriever.current_prices()
 
         buy_symbols = holdings_difference[holdings_difference > 0]
         safe_buy_symbols = (buy_symbols / buy_symbols.sum()) * investment_capital
-        buy_trades = safe_buy_symbols / pricing['value']
+        buy_trades = safe_buy_symbols / current_prices['adjClose']
         buy_trades.dropna(inplace=True)
         buy_trades = buy_trades.apply(np.floor)
 
@@ -44,6 +46,15 @@ class BasicRebalancer:
             trades.append(trade)
 
         return trades
+
+
+class BasicRebalance:
+
+    def __init__(self):
+        pass
+
+    def execute(self):
+        pass
 
 
 if __name__ == "__main__":
